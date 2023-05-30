@@ -14,7 +14,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@backend/auth-dtos": ["libs/auth-dtos/src/index.ts"],
+      "@backend/entities": ["libs/entities/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
