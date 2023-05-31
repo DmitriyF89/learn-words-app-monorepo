@@ -16,7 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@backend/auth-dtos": ["libs/auth-dtos/src/index.ts"],
-      "@backend/entities": ["libs/entities/src/index.ts"]
+      "@backend/entities": ["libs/entities/src/index.ts"],
+      "@backend/user-dtos": ["libs/user-dtos/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

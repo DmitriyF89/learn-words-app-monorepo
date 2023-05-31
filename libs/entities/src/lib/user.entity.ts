@@ -10,12 +10,14 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
-  userName: string;
+  @Column({
+    nullable: true,
+  })
+  userName?: string;
 
   @Column()
   password: string;
 
-  @OneToMany(() => Language, (language) => language.user)
-  languages: Language[]
+  @OneToMany(() => Language, (language) => language.user, { nullable: true })
+  languages?: Language[]
 }

@@ -8,7 +8,7 @@ const getDataSourceConfig = (): DataSourceOptions => ({
   type: "sqlite",
   database: nodeEnv === 'development' ? 'sqlite.dev' : 'sqlite.test',
   entities: [Language, User, Word],
-  synchronize: false,
+  synchronize: true,
 })
 
 export { getDataSourceConfig };
