@@ -3,11 +3,11 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { UserAuthDto } from '@backend/auth-dtos';
-import { User } from '@backend/entities'
+import { User } from '@backend/entities';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private repo: Repository<User>) { }
+  constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
   findByEmail(email: string) {
     const user = this.repo.findOneBy({ email });
@@ -35,7 +35,9 @@ export class UsersService {
     return this.repo.save(userEntity);
   }
 
-  updateUser() { }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  updateUser() {}
 
-  deleteUser() { }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  deleteUser() {}
 }
