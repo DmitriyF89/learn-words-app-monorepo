@@ -13,10 +13,10 @@ jobs:
     steps:
       - name: Validate branch name
         run: |
-          if [[ ${{ github.ref }} =~ ^refs/heads/(feature|bugfix|test)/.*$ ]]; then
+          if [[ ${{ github.event.ref }} =~ ^refs/heads/(feature|bugfix|test)/.*$ ]]; then
             echo "Branch name is valid"
           else
-            echo "${{ github.ref }} Invalid branch name. Please use 'feature/<name>', 'bugfix/<name>' or 'test/<name>' format"
+            echo "${{ github.event.ref }} Invalid branch name. Please use 'feature/<name>', 'bugfix/<name>' or 'test/<name>' format"
             exit 1
           fi
 
