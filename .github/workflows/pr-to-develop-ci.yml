@@ -1,7 +1,9 @@
 name: CI on a PR to the develop branch
 
 on:
-  pull_requests:
+  push:
+    branches: [develop]
+  pull_request:
     branches: [develop]
 
 jobs:
