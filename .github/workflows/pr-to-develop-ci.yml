@@ -16,7 +16,7 @@ jobs:
           if [[ ${{ github.ref }} =~ ^refs/heads/(feature|bugfix|test)/.*$ ]]; then
             echo "Branch name is valid"
           else
-            echo "Invalid branch name. Please use 'feature/<name>', 'bugfix/<name>' or 'test/<name>' format"
+            echo "${{ github.ref }} Invalid branch name. Please use 'feature/<name>', 'bugfix/<name>' or 'test/<name>' format"
             exit 1
           fi
 
