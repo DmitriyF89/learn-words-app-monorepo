@@ -26,6 +26,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Use NodeJS v18.x
         uses: actions/setup-node@v3
         with:
@@ -33,8 +35,8 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Start lint
-        run: npx nx affected --target=lint --base=${{ github.head_ref }}
+        run: npx nx affected --target=lint --base=origin/develop
       - name: Start build
-        run: npx nx affected --target=build --base=${{ github.head_ref }}
+        run: npx nx affected --target=build --base=origin/develop
       - name: Start Unit tests
-        run: npx nx affected --target=test --base=${{ github.head_ref }}
+        run: npx nx affected --target=test --base=origin/develop
