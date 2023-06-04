@@ -33,8 +33,8 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Start lint
-        run: npx nx affected --target=lint --base=develop
+        run: npx nx affected --target=lint --base=${{ github.head_ref }}
       - name: Start build
-        run: npx nx affected --target=build --base=develop
+        run: npx nx affected --target=build --base=${{ github.head_ref }}
       - name: Start Unit tests
-        run: npx nx affected --target=test --base=develop
+        run: npx nx affected --target=test --base=${{ github.head_ref }}
