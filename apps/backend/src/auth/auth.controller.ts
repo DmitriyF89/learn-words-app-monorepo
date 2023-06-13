@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Session, Get, Request } from '@nestjs/common';
 
 import { UserAuthDto } from '@backend/auth-dtos'
 import { UserDto } from '@backend/user-dtos';
@@ -12,12 +12,26 @@ export class AuthController {
   constructor(private authService: AuthService) { }
 
   @Post('signin')
-  signin(@Body() body: UserAuthDto) {
-    return this.authService.signin(body);
+  async signin(@Body() body: UserAuthDto, @Session() session: Record<string, any>) {
+    const user = await this.authService.signin(body);
+    session.userId = user.id;
+
+    return user;
   }
 
   @Post('signup')
-  signup(@Body() body: UserAuthDto) {
-    return this.authService.signup(body);
+  async signup(@Body() body: UserAuthDto, @Session() session: Record<string, any>) {
+    const user = await this.authService.signup(body);
+    session.userId = user.id;
+
+    return user;
+  }
+
+  @Get('signout')
+  signout(@Session() session: Record<string, any>, @Request() req: Record<string, any>) {
+    session.userId = undefined;
+    req.currentUser = undefined;
+
+    return true;
   }
 }
