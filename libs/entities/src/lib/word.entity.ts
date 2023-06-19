@@ -23,7 +23,7 @@ export class Word {
   added: string
 
   @Column()
-  lastCorrectRecall: string
+  lastRecall?: string
 
   @Column()
   successWordRecallCount: number

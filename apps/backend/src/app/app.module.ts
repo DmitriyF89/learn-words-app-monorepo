@@ -6,11 +6,13 @@ import { DataSource } from 'typeorm';
 import { getDataSourceConfig } from '../data-source';
 import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
+import { LanguagesModule } from '../languages/languages.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 @Module({
   imports: [
+    LanguagesModule,
     AuthModule,
     UsersModule,
     ConfigModule.forRoot({
