@@ -9,9 +9,11 @@ import { UsersModule } from '../users/users.module';
 import { LanguagesModule } from '../languages/languages.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { WordsModule } from '../words/words.module';
 
 @Module({
   imports: [
+    WordsModule,
     LanguagesModule,
     AuthModule,
     UsersModule,

@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { Repository, LessThan } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { Word } from '@backend/entities';
-import { AddWordDto } from '@backend/word-dtos';
+import { AddWordDto, UpdateWordDto } from '@backend/word-dtos';
 
 import { DateService } from '../utils/Date';
 
@@ -31,6 +31,7 @@ export class WordsService {
       synonyms,
       added: this.dateService.getCurrentDateString(),
       successWordRecallCount: 0,
+      lastRecall: '',
     });
 
     return this.repo.save(word);
@@ -77,5 +78,25 @@ export class WordsService {
 
       return this.dateService.isFirstDateEqualsOrBefore(dateToRepeat, today);
     });
+  }
+
+  async deleteWord({ wordId, languageId, userId }: { languageId: string, userId: string, wordId: string }) {
+    const word = await this.repo.findOne({ where: { id: wordId, language: { id: languageId, user: { id: userId } } } });
+
+    if (!word) {
+      throw new BadRequestException('No such a word');
+    }
+
+    return this.repo.remove(word);
+  }
+
+  async updateWord(wordId: string, updatedWord: UpdateWordDto) {
+    const word = await this.repo.findOne({ where: { id: wordId } });
+
+    if (!word) {
+      throw new NotFoundException(`No word with id ${wordId}`);
+    }
+
+    return this.repo.update(word, updatedWord);
   }
 }
