@@ -4,7 +4,8 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky install",
-    "server:start:dev": "npx nx run backend:serve --watch=true"
+    "server:start:dev": "npx nx run backend:serve --watch=true",
+    "frontend:start:dev": "npx nx run frontend:serve --configuration=development"
   },
   "private": true,
   "dependencies": {

@@ -1,0 +1,11 @@
+.pageWrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 0;
+}
