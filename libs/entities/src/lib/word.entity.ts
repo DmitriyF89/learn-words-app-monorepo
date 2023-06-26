@@ -11,19 +11,19 @@ export class Word {
   text: string;
 
   @Column()
-  synonyms?: string
+  synonyms: string
 
   @Column()
-  examples?: string
+  examples: string
 
   @Column()
-  picture?: string
+  picture: string
 
   @Column()
   added: string
 
   @Column()
-  lastCorrectRecall: string
+  lastRecall: string
 
   @Column()
   successWordRecallCount: number
