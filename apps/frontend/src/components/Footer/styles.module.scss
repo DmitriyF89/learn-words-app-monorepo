@@ -1,21 +1,22 @@
+@import '../../constants/styles/variables.scss';
+
 .footer {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  background-color: #f8f9fa;
+  background-color: $primary;
   padding: 32px 16px;
+  color: $primary-font-color;
 }
 
 .footerHeading {
   margin: 0;
   margin-bottom: 16px;
-  font-style: italic;
   font-size: 18px;
 }
 
 .footerText {
   margin: 0;
-  font-style: italic;
   font-size: 16px;
 
   &:not(:last-of-type) {
