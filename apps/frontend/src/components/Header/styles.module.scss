@@ -6,6 +6,7 @@
   padding: 16px;
   justify-content: space-between;
   background-color: $primary;
+  font-size: $font-size-xxl;
 }
 
 .navWrapper {
@@ -54,11 +55,11 @@
 }
 
 .appTitle {
-  font-size: large;
+  font-size: $font-size-xxl;
   font-style: italic;
   font-weight: bold;
   margin: 0;
-  display: flex;
+  display: inline-flex;
 
   a {
     display: flex;
@@ -73,7 +74,6 @@
   }
 
   a:hover {
-    background-color: $dark;
     box-shadow: inset 0 -3px 0 0 $light;
   }
 }

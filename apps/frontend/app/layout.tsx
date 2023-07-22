@@ -1,5 +1,7 @@
+'use client';
 import { Header } from '../src/components/Header';
 import { Footer } from '../src/components/Footer';
+import { AuthContextWrapper } from '../src/contexts/auth/authContext';
 
 import styles from './layout.module.scss';
 
@@ -17,11 +19,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className={styles.pageWrapper}>
-          <Header />
-          <div className={styles.contentWrapper}>{children}</div>
-          <Footer />
-        </div>
+        <AuthContextWrapper>
+          <div className={styles.pageWrapper}>
+            <Header />
+            <div className={styles.contentWrapper}>{children}</div>
+            <Footer />
+          </div>
+        </AuthContextWrapper>
       </body>
     </html>
   );

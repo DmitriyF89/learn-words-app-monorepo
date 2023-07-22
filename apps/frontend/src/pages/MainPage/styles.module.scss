@@ -1,0 +1,18 @@
+@import '../../constants/styles/variables.scss';
+
+.description {
+  font-size: $font-size-xl;
+}
+
+.descriptionTitle {
+  font-size: $font-size-xxl;
+  font-weight: 900;
+}
+
+.featuresTitle {
+  font-size: $font-size-xxl;
+}
+
+.feature {
+  font-size: $font-size-xl;
+}

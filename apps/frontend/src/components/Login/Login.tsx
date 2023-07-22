@@ -1,7 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 import { Modal } from '../Modal';
+import { AuthContext } from '../../contexts/auth/authContext';
 
 import styles from './styles.module.scss';
 
@@ -39,52 +41,109 @@ const PurposeSwitcher: React.FC<PurposeSwitcherProps> = ({
 };
 
 const RegisterForm: React.FC = () => {
-  const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  };
-
   return (
-    <form className={styles.registerForm} onSubmit={onFormSubmit}>
-      <label className={styles.registerFormLabel}>
-        <span>Email</span>
-        <input type="text" className={styles.registerFormInput} />
-      </label>
-      <label className={styles.registerFormLabel}>
-        <span>Password</span>
-        <input type="password" className={styles.registerFormInput} />
-      </label>
-      <label className={styles.registerFormLabel}>
-        <span>Confirm password</span>
-        <input type="password" className={styles.registerFormInput} />
-      </label>
-
-      <button type="submit" className={styles.registerFormSubmitButton}>
-        Register
-      </button>
-    </form>
+    <Formik
+      initialValues={{
+        email: '',
+        password: '',
+        confirmPassword: '',
+      }}
+      onSubmit={(values) => {
+        console.log({ values });
+      }}
+    >
+      {({ isSubmitting }) => (
+        <Form className={styles.registerForm}>
+          <label className={styles.registerFormLabel}>
+            <span>Email</span>
+            <Field
+              type="email"
+              name="email"
+              className={styles.registerFormInput}
+            />
+          </label>
+          <ErrorMessage name="email" component="div" />
+          <label className={styles.registerFormLabel}>
+            <span>Password</span>
+            <Field
+              type="password"
+              name="password"
+              className={styles.registerFormInput}
+            />
+          </label>
+          <ErrorMessage name="password" component="div" />
+          <label className={styles.registerFormLabel}>
+            <span>Confirm password</span>
+            <Field
+              type="password"
+              name="confirmPassword"
+              className={styles.registerFormInput}
+            />
+          </label>
+          <ErrorMessage
+            name="confirmPassword"
+            component="div"
+            className={styles.registerFormInput}
+          />
+          <button
+            type="submit"
+            className={styles.registerFormSubmitButton}
+            disabled={isSubmitting}
+          >
+            Register
+          </button>
+        </Form>
+      )}
+    </Formik>
   );
 };
 
-const LoginForm: React.FC = () => {
-  const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  };
+const LoginForm: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
+  const { setUser } = useContext(AuthContext);
 
   return (
-    <form className={styles.registerForm} onSubmit={onFormSubmit}>
-      <label className={styles.registerFormLabel}>
-        <span>Email</span>
-        <input type="text" className={styles.registerFormInput} />
-      </label>
-      <label className={styles.registerFormLabel}>
-        <span>Password</span>
-        <input type="password" className={styles.registerFormInput} />
-      </label>
+    <Formik
+      initialValues={{
+        email: '',
+        password: '',
+      }}
+      onSubmit={(values, { setSubmitting }) => {
+        setTimeout(() => {
+          setSubmitting(false);
+          setUser({});
+          onLogin();
+        }, 1000);
+      }}
+    >
+      {({ isSubmitting, errors, isValid }) => (
+        <Form className={styles.registerForm}>
+          <label className={styles.registerFormLabel}>
+            <span>Email</span>
+            <Field
+              name="email"
+              type="text"
+              className={styles.registerFormInput}
+            />
+          </label>
+          <label className={styles.registerFormLabel}>
+            <span>Password</span>
+            <Field
+              name="password"
+              type="password"
+              className={styles.registerFormInput}
+            />
+          </label>
 
-      <button type="submit" className={styles.registerFormSubmitButton}>
-        Login
-      </button>
-    </form>
+          <button
+            type="submit"
+            className={styles.registerFormSubmitButton}
+            disabled={isSubmitting || !isValid}
+          >
+            Login
+          </button>
+        </Form>
+      )}
+    </Formik>
   );
 };
 
@@ -105,13 +164,19 @@ const Login: React.FC = () => {
   };
 
   const mainContent =
-    modalPurpose === 'login' ? <LoginForm /> : <RegisterForm />;
+    modalPurpose === 'login' ? (
+      <LoginForm onLogin={onModalClose} />
+    ) : (
+      <RegisterForm />
+    );
 
   return (
     <>
-      <button onClick={onButtonClick} className={styles.loginButton}>
-        Login
-      </button>
+      <div className={styles.loginButtonWrapper}>
+        <button onClick={onButtonClick} className={styles.loginButton}>
+          Login
+        </button>
+      </div>
       {showModal ? (
         <Modal
           headerContent={
