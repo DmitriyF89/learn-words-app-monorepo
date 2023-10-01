@@ -1,15 +1,18 @@
-import { useContext } from 'react';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
 
 import { Grid } from '../Grid';
 import { Login } from '../Login';
 import { Logout } from '../Logout/Logout';
-import { AuthContext } from '../../contexts/auth/authContext';
+import { RootState } from '../../stores';
 
 import styles from './styles.module.scss';
 
 const Header: React.FC = () => {
-  const { user } = useContext(AuthContext);
+  const user = useSelector((state: RootState) => state.auth.userId);
+  const selectedLanguage = useSelector(
+    (state: RootState) => state.training.language
+  );
 
   return (
     <>
@@ -29,9 +32,11 @@ const Header: React.FC = () => {
                       <li className={styles.navListItem}>
                         <Link href="/words">Words</Link>
                       </li>
-                      <li className={styles.navListItem}>
-                        <Link href="/training">Training</Link>
-                      </li>
+                      {selectedLanguage ? (
+                        <li className={styles.navListItem}>
+                          <Link href="/training">Training</Link>
+                        </li>
+                      ) : null}
                     </ul>
                   </nav>
                 ) : null}

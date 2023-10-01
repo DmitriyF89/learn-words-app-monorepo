@@ -5,10 +5,13 @@ export class AddWordDto {
   text: string;
 
   @IsString()
-  synonyms?: string
+  description: string;
 
   @IsString()
-  examples?: string
+  synonyms?: string[]
+
+  @IsString()
+  examples?: string[]
 
   @IsString()
   picture?: string

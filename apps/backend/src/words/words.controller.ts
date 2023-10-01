@@ -26,6 +26,15 @@ export class WordsController {
     return this.wordsService.getWordsToRepeat(languageId);
   }
 
+  @Get(':languageId/:wordId')
+  getWord(
+    @Param('languageId') languageId: string,
+    @Param('wordId') wordId: string,
+    @Session() session: Record<string, string>
+  ) {
+    return this.wordsService.getWord({ languageId, wordId, userId: session.userId })
+  }
+
   @Delete(':languageId/:wordId')
   deleteWord(
     @Param('languageId') languageId: string,

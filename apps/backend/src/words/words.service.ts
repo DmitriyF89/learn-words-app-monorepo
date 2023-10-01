@@ -14,21 +14,28 @@ export class WordsService {
     private dateService: DateService
   ) { }
 
+  private delimiter = '|';
+
+  private joinWithDelimiter = (arr: string[]) => {
+    return arr.join(this.delimiter);
+  };
+
   getLanguageWords(langId: string) {
     return this.repo.find({ where: { language: { id: langId } } });
   }
 
   addWord(
-    { text, examples, picture, synonyms }: AddWordDto,
+    { text, examples, picture, synonyms, description }: AddWordDto,
     languageId: string) {
     const word = this.repo.create({
       text,
+      description,
       language: {
         id: languageId,
       },
-      examples,
+      examples: this.joinWithDelimiter(examples),
       picture,
-      synonyms,
+      synonyms: synonyms.join(this.delimiter),
       added: this.dateService.getCurrentDateString(),
       successWordRecallCount: 0,
       lastRecall: '',
@@ -45,18 +52,22 @@ export class WordsService {
         {
           language: { id: languageId },
           successWordRecallCount: LessThan(6)
+        },
+        order: {
+          id: 'ASC'
         }
       }
     );
 
     // Filter only those that has to be repeated this day
     const successRecallCountToNextDayDistance = {
-      0: 1,
-      1: 3,
-      2: 7,
-      3: 14,
-      4: 30,
-      5: 60,
+      0: 0,
+      1: 1,
+      2: 3,
+      3: 7,
+      4: 14,
+      5: 30,
+      6: 60,
     }
 
     // TODO: move nextDateShift to some constants or other file
@@ -64,7 +75,7 @@ export class WordsService {
 
     return words.filter(({ lastRecall, successWordRecallCount }) => {
       const isWordHasNotBeenTrainedYet = !lastRecall;
-      const isWordLearned = successWordRecallCount > 5;
+      const isWordLearned = successWordRecallCount > 6;
 
       if (isWordHasNotBeenTrainedYet) {
         return true;
@@ -72,6 +83,10 @@ export class WordsService {
 
       if (isWordLearned) {
         return false;
+      }
+
+      if (new Date(today).toDateString() === new Date(lastRecall).toDateString()) {
+        return true;
       }
 
       const dateToRepeat = this.dateService.getNextDateString(lastRecall, successRecallCountToNextDayDistance[successWordRecallCount]);
@@ -97,6 +112,24 @@ export class WordsService {
       throw new NotFoundException(`No word with id ${wordId}`);
     }
 
-    return this.repo.update(word, updatedWord);
+    const newSynonyms = updatedWord.synonyms ? this.joinWithDelimiter(updatedWord.synonyms) : word.synonyms;
+    const newExamples = updatedWord.examples ? this.joinWithDelimiter(updatedWord.examples) : word.examples;
+
+    const newWord = {
+      ...word, ...updatedWord, synonyms: newSynonyms,
+      examples: newExamples,
+    }
+
+    return this.repo.save(newWord);
+  }
+
+  async getWord({ wordId, languageId, userId }: { languageId: string, userId: string, wordId: string }) {
+    const word = await this.repo.findOne({ where: { id: wordId, language: { id: languageId, user: { id: userId } } } });
+
+    if (!word) {
+      throw new NotFoundException(`No word with id ${wordId}`);
+    }
+
+    return word;
   }
 }

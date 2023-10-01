@@ -1,5 +1,7 @@
 'use client';
 import { ReactNode } from 'react';
+import CloseIcon from '@mui/icons-material/Close';
+import { IconButton } from '@mui/material';
 
 import styles from './styles.module.scss';
 
@@ -17,23 +19,27 @@ const Modal: React.FC<Props> = ({
   onClose,
 }) => {
   return (
-    <div
-      className={styles.backdrop}
-      onClick={(event) => {
-        if (event.target === event.currentTarget) {
-          onClose?.();
-        }
-      }}
-    >
+    <>
       <div className={styles.wrapper}>
-        <button className={styles.closeButton} onClick={onClose}>
-          x
-        </button>
+        <div className={styles.closeButton}>
+          <IconButton onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        </div>
+
         <div className={styles.header}>{headerContent}</div>
         <div className={styles.main}>{mainContent}</div>
         <div className={styles.footer}>{footerContent}</div>
       </div>
-    </div>
+      <div
+        className={styles.backdrop}
+        onClick={(event) => {
+          if (event.target === event.currentTarget) {
+            onClose?.();
+          }
+        }}
+      />
+    </>
   );
 };
 

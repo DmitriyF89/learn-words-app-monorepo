@@ -7,3 +7,14 @@ export class UserAuthDto {
   @IsString()
   password: string;
 }
+
+export class UserRegisterDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  password: string;
+
+  @IsString()
+  confirmPassword: string;
+}

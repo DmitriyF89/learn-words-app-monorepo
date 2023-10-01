@@ -1,11 +1,20 @@
 'use client';
-import { useContext, useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { useState } from 'react';
+import { Formik, Form, Field, FieldProps } from 'formik';
+import { useDispatch } from 'react-redux';
+import { TextField } from '@mui/material';
+
+import { User } from '@backend/entities';
 
 import { Modal } from '../Modal';
-import { AuthContext } from '../../contexts/auth/authContext';
+import {
+  useLoginUserMutation,
+  useRegisterUserMutation,
+} from '../../services/api/apiService';
+import { setUserId } from '../../stores/authSlice';
 
 import styles from './styles.module.scss';
+import { Button } from '../Button';
 
 type ModalPurpose = 'login' | 'register';
 
@@ -40,7 +49,10 @@ const PurposeSwitcher: React.FC<PurposeSwitcherProps> = ({
   );
 };
 
-const RegisterForm: React.FC = () => {
+const RegisterForm: React.FC<{ onRegister: () => void }> = ({ onRegister }) => {
+  const [register, { isError }] = useRegisterUserMutation();
+  const dispatch = useDispatch();
+
   return (
     <Formik
       initialValues={{
@@ -48,50 +60,100 @@ const RegisterForm: React.FC = () => {
         password: '',
         confirmPassword: '',
       }}
-      onSubmit={(values) => {
-        console.log({ values });
+      validate={(values) => {
+        const errors: Partial<Record<keyof typeof values, string>> = {};
+
+        if (!values.email) {
+          errors.email = 'Email is required';
+        } else if (
+          !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+        ) {
+          errors.email = 'Invalid email address';
+        }
+
+        if (!values.password) {
+          errors.password = 'Password is required';
+        } else if (values.password.length < 4) {
+          errors.password =
+            'Password length has to be at least 4 characters long';
+        }
+
+        if (!values.confirmPassword) {
+          errors.confirmPassword = 'Confirm password is required';
+        } else if (values.password !== values.confirmPassword) {
+          errors.confirmPassword = 'Passwords do not match';
+        }
+
+        return errors;
+      }}
+      onSubmit={async (values) => {
+        const user = await register(values);
+
+        if (isError) {
+          alert('Error while login');
+        } else {
+          const id = (user as unknown as { data: User }).data.id;
+
+          dispatch(setUserId({ id }));
+
+          onRegister();
+        }
       }}
     >
       {({ isSubmitting }) => (
         <Form className={styles.registerForm}>
-          <label className={styles.registerFormLabel}>
-            <span>Email</span>
-            <Field
-              type="email"
-              name="email"
-              className={styles.registerFormInput}
-            />
-          </label>
-          <ErrorMessage name="email" component="div" />
-          <label className={styles.registerFormLabel}>
-            <span>Password</span>
-            <Field
-              type="password"
-              name="password"
-              className={styles.registerFormInput}
-            />
-          </label>
-          <ErrorMessage name="password" component="div" />
-          <label className={styles.registerFormLabel}>
-            <span>Confirm password</span>
-            <Field
-              type="password"
-              name="confirmPassword"
-              className={styles.registerFormInput}
-            />
-          </label>
-          <ErrorMessage
-            name="confirmPassword"
-            component="div"
+          <Field type="email" name="email" className={styles.registerFormInput}>
+            {({ field, meta: { error, touched } }: FieldProps) => (
+              <TextField
+                label="Email"
+                variant="standard"
+                fullWidth
+                autoComplete="off"
+                error={!!error && touched}
+                helperText={error}
+                {...field}
+              />
+            )}
+          </Field>
+          <Field
+            type="password"
+            name="password"
             className={styles.registerFormInput}
-          />
-          <button
-            type="submit"
-            className={styles.registerFormSubmitButton}
-            disabled={isSubmitting}
           >
+            {({ field, meta: { error, touched } }: FieldProps) => (
+              <TextField
+                label="Password"
+                variant="standard"
+                fullWidth
+                autoComplete="off"
+                error={!!error && touched}
+                helperText={error}
+                type="password"
+                {...field}
+              />
+            )}
+          </Field>
+          <Field
+            type="password"
+            name="confirmPassword"
+            className={styles.registerFormInput}
+          >
+            {({ field, meta: { error, touched } }: FieldProps) => (
+              <TextField
+                label="Confirm password"
+                variant="standard"
+                fullWidth
+                autoComplete="off"
+                error={!!error && touched}
+                helperText={error}
+                type="password"
+                {...field}
+              />
+            )}
+          </Field>
+          <Button type="submit" disabled={isSubmitting} fullWidth={false}>
             Register
-          </button>
+          </Button>
         </Form>
       )}
     </Formik>
@@ -99,7 +161,8 @@ const RegisterForm: React.FC = () => {
 };
 
 const LoginForm: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
-  const { setUser } = useContext(AuthContext);
+  const [loginUser, { isError }] = useLoginUserMutation();
+  const dispatch = useDispatch();
 
   return (
     <Formik
@@ -107,40 +170,81 @@ const LoginForm: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
         email: '',
         password: '',
       }}
-      onSubmit={(values, { setSubmitting }) => {
-        setTimeout(() => {
-          setSubmitting(false);
-          setUser({});
-          onLogin();
-        }, 1000);
+      validateOnBlur
+      onSubmit={async (values) => {
+        const user = await loginUser(values);
+
+        if (isError) {
+          alert('Error while login');
+        } else {
+          const id = (user as unknown as { data: User }).data.id;
+
+          dispatch(setUserId({ id }));
+        }
+
+        onLogin();
+      }}
+      validate={(values) => {
+        const errors: Partial<Record<keyof typeof values, string>> = {};
+
+        if (!values.email) {
+          errors.email = 'Email is required';
+        } else if (
+          !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+        ) {
+          errors.email = 'Invalid email address';
+        }
+
+        if (!values.password) {
+          errors.password = 'Password is required';
+        } else if (values.password.length < 4) {
+          errors.password =
+            'Password length has to be at least 4 characters long';
+        }
+
+        return errors;
       }}
     >
-      {({ isSubmitting, errors, isValid }) => (
+      {({ isSubmitting, isValid }) => (
         <Form className={styles.registerForm}>
-          <label className={styles.registerFormLabel}>
-            <span>Email</span>
-            <Field
-              name="email"
-              type="text"
-              className={styles.registerFormInput}
-            />
-          </label>
-          <label className={styles.registerFormLabel}>
-            <span>Password</span>
-            <Field
-              name="password"
-              type="password"
-              className={styles.registerFormInput}
-            />
-          </label>
-
-          <button
+          <Field type="email" name="email" className={styles.registerFormInput}>
+            {({ field, meta: { error, touched } }: FieldProps) => (
+              <TextField
+                label="Email"
+                variant="standard"
+                fullWidth
+                autoComplete="off"
+                error={touched && !!error}
+                helperText={error}
+                {...field}
+              />
+            )}
+          </Field>
+          <Field
+            type="password"
+            name="password"
+            className={styles.registerFormInput}
+          >
+            {({ field, meta: { error }, form }: FieldProps) => (
+              <TextField
+                label="Password"
+                variant="standard"
+                fullWidth
+                autoComplete="off"
+                error={form.touched.password && !!form.errors.password}
+                helperText={error}
+                type="password"
+                {...field}
+              />
+            )}
+          </Field>
+          <Button
             type="submit"
             className={styles.registerFormSubmitButton}
             disabled={isSubmitting || !isValid}
           >
             Login
-          </button>
+          </Button>
         </Form>
       )}
     </Formik>
@@ -167,7 +271,7 @@ const Login: React.FC = () => {
     modalPurpose === 'login' ? (
       <LoginForm onLogin={onModalClose} />
     ) : (
-      <RegisterForm />
+      <RegisterForm onRegister={onModalClose} />
     );
 
   return (
