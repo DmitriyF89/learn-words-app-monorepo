@@ -11,12 +11,15 @@ export class Word {
   text: string;
 
   @Column()
+  description: string;
+
+  @Column({ nullable: true })
   synonyms: string
 
-  @Column()
+  @Column({ nullable: true })
   examples: string
 
-  @Column()
+  @Column({ nullable: true })
   picture: string
 
   @Column()

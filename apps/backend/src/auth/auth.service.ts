@@ -2,7 +2,7 @@ import { randomBytes, scrypt as _scrypt } from 'node:crypto';
 import { promisify } from 'node:util';
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
 
-import { UserAuthDto } from '@backend/auth-dtos';
+import { UserAuthDto, UserRegisterDto } from '@backend/auth-dtos';
 
 import { UsersService } from '../users/users.service';
 
@@ -41,7 +41,11 @@ export class AuthService {
     return user;
   }
 
-  async signup({ email, password }: UserAuthDto) {
+  async signup({ email, password, confirmPassword }: UserRegisterDto) {
+    if (password !== confirmPassword) {
+      throw new BadRequestException('Password and confirmPassword do not match');
+    }
+
     const existingUser = await this.usersService.findByEmail(email);
 
     if (existingUser) {

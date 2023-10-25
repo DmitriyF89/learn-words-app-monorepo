@@ -1,0 +1,25 @@
+@import '../../constants/styles/variables.scss';
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  background-color: $primary;
+  padding: 32px 16px;
+  color: $primary-font-color;
+}
+
+.footerHeading {
+  margin: 0;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.footerText {
+  margin: 0;
+  font-size: 16px;
+
+  &:not(:last-of-type) {
+    margin-bottom: 12px;
+  }
+}

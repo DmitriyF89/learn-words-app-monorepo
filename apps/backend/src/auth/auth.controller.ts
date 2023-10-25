@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Session, Get, Request } from '@nestjs/common';
 
-import { UserAuthDto } from '@backend/auth-dtos'
+import { UserAuthDto, UserRegisterDto } from '@backend/auth-dtos'
 import { UserDto } from '@backend/user-dtos';
 
 import { AuthService } from './auth.service';
@@ -20,7 +20,7 @@ export class AuthController {
   }
 
   @Post('signup')
-  async signup(@Body() body: UserAuthDto, @Session() session: Record<string, any>) {
+  async signup(@Body() body: UserRegisterDto, @Session() session: Record<string, any>) {
     const user = await this.authService.signup(body);
     session.userId = user.id;
 

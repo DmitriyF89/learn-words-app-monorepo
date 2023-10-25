@@ -1,0 +1,79 @@
+@import '../../constants/styles/variables.scss';
+
+.header {
+  display: flex;
+  flex-shrink: 0;
+  padding: 16px;
+  justify-content: space-between;
+  background-color: $primary;
+  font-size: $font-size-xxl;
+}
+
+.navWrapper {
+  display: flex;
+  gap: 32px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+}
+
+.navList {
+  padding: 0;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+}
+
+.navListItem {
+  font-weight: bold;
+
+  a {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    text-decoration: none;
+    color: $primary-font-color;
+    cursor: pointer;
+    padding: 16px;
+    transition: all 0.3s ease;
+  }
+
+  a:hover {
+    box-shadow: inset 0 -3px 0 0 $light;
+  }
+}
+
+.authBlock {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  color: $primary-font-color;
+}
+
+.appTitle {
+  font-size: $font-size-xxl;
+  font-style: italic;
+  font-weight: bold;
+  margin: 0;
+  display: inline-flex;
+
+  a {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    text-decoration: none;
+    color: $primary-font-color;
+    cursor: pointer;
+    padding: 16px;
+    transition: all 0.3s ease;
+    border-radius: 8px 8px 0 0;
+  }
+
+  a:hover {
+    box-shadow: inset 0 -3px 0 0 $light;
+  }
+}

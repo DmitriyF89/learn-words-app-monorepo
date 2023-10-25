@@ -1,0 +1,1 @@
+export { WordPage } from './WordPage';
